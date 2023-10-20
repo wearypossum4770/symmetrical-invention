@@ -18,10 +18,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
+  const formData = await request.formData()
+  const {email, password, username, anonymousId, countryId, redirectTo: unsafeRedirect} = Object.fromEntries(formData.entries())
+  
+  const redirectTo = safeRedirect(unsafeRedirect, "/");
 
   if (!validateEmail(email)) {
     return json(
@@ -57,7 +57,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     );
   }
 
-  const user = await createUser(email, password);
+  const user = await createUser({email, password, anonymousId, username, countryId});
 
   return createUserSession({
     redirectTo,
@@ -142,6 +142,8 @@ export default function Join() {
               ) : null}
             </div>
           </div>
+
+        <input name="username" autoComplete="username"/>
 
           <input type="hidden" name="redirectTo" value={redirectTo} />
           <button

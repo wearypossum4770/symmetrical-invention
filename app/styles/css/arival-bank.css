@@ -1,0 +1,68 @@
+.navigation-link-breadcrumb > ul {
+  list-style-type: none;
+}
+.navigation-link-breadcrumb > ul > li {
+  margin: 20px 0;
+}
+.navigation-link-breadcrumb li span {
+  padding: 20px 12px;
+  color: #817ca5;
+}
+.arival-bank-confirmation,
+.arival-bank-form {
+  background-color: #817ca5;
+  width: 400px;
+  padding: 40px 20px;
+  border-radius: 20px;
+}
+.arival-bank-confirmation > button,
+.arival-bank-form button[type="submit"] {
+  margin: 20px auto;
+  width: 100%;
+  border: none;
+  border-radius: 4px;
+  padding: 16px 0;
+  align-self: stretch;
+  font-size: 24px;
+  text-align: center;
+}
+.arival-bank-form button[type="submit"][data-first-interaction="true"] {
+  color: #413c5f;
+  background-color: #fff;
+}
+.arival-bank-form button[type="submit"][data-first-interaction="false"] {
+  color: #8b85b1;
+  background-color: #a39fc1;
+}
+.arival-bank-form-group {
+  display: flex;
+  flex-direction: column;
+}
+.arival-bank-form-group > label {
+  margin: 8px 0;
+  color: #fff;
+}
+
+.arival-bank-form-group > em {
+  color: red;
+}
+
+.arival-bank-country-name {
+  text-transform: capitalize;
+}
+
+.arival-bank-confirmation-container{
+  display: grid;
+  grid-template-columns: repeat(2, 50%);
+}
+
+.arival-bank-confirmation > button {
+  color: #413c5f;
+  background-color: #fff;
+ }
+ .arival-bank-confirmation-data {
+  color: #FFF;
+ }
+ .arival-bank-confirmation-header {
+  color: #CECAEB;
+ }

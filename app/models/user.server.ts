@@ -8,27 +8,38 @@ export type { User } from "@prisma/client";
 export type AnonymousUser = {
   anonymousId: string;
   email: string;
+  phoneNumber: string;
   username: string;
   password: string;
   countryId: string;
-}
+};
 export async function getUserById(id: User["id"]) {
   return prisma.user.findUnique({ where: { id } });
 }
+export const checkUserByEmail = async ({ email }: Pick<User, "email">) =>
+  prisma.user.findUnique({ where: { email } });
+export const getUserByEmail = async (email: User["email"]) =>
+  prisma.user.findUnique({ where: { email } });
 
-export async function getUserByEmail(email: User["email"]) {
-  return prisma.user.findUnique({ where: { email } });
-}
-
-export async function createUser({ email, password, countryId, username}: AnonymousUser) {
+export const getUserReviewInformationByEmail = ({ email}: Pick<User, 'email'>) => prisma.user.findUnique({ where: { email }, include: { country: true }});
+export async function createUser({
+  email,
+  password,
+  countryId,
+  username,
+  phoneNumber,
+}: AnonymousUser) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   return prisma.user.create({
+    include: {
+    country: true,
+    },
     data: {
-      email, username,
-      country: {
-        connect: { countryId }
-      },
+      email,
+      username,
+      phoneNumber,
+      countryId,
       password: {
         create: {
           hash: hashedPassword,
