@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 
 import { prisma } from "~/db.server";
 
-
+export type { User }
 export type AnonymousUser = {
   anonymousId: string;
   email: string;

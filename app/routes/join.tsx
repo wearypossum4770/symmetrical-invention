@@ -19,10 +19,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData()
-  const {email, password, username, anonymousId, countryId, redirectTo: unsafeRedirect} = Object.fromEntries(formData.entries())
-  
-  const redirectTo = safeRedirect(unsafeRedirect, "/");
-
+ 
+  const email = formData.get('email') as string;
+  const password = formData.get('password') as string;
+  const username = formData.get('username') as string;
+  const anonymousId = formData.get('anonymousId') as string;
+  const countryId = formData.get('countryId') as string;
+  const redirectTo = safeRedirect(formData.get('redirectTo') as string, "/");
+  const phoneNumber = formData.get('phoneNumber') as string;
   if (!validateEmail(email)) {
     return json(
       { errors: { email: "Email is invalid", password: null } },
@@ -57,7 +61,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     );
   }
 
-  const user = await createUser({email, password, anonymousId, username, countryId});
+  const user = await createUser({email, password, anonymousId, username, countryId, phoneNumber});
 
   return createUserSession({
     redirectTo,

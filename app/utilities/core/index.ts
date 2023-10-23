@@ -1,4 +1,4 @@
-type RouteMatch = {
+export type RouteMatch = {
     id: string;
     pathname: string;
     handle: Record<string, string> ;
@@ -21,7 +21,7 @@ export const colorSwitcher = ({ visited, isActive }: Pick<Breadcrumb,'visited'|'
   };
   
 export const iterateBreadcrumbs = (breadcrumbs: Array<Breadcrumb>, matches: Array<RouteMatch>) => {
-    const { id } = matches.at(-1)
+    const { id } = matches[matches.length -1]
     const step = breadcrumbs.map(({path}) =>path).indexOf(id)
     return breadcrumbs.map(({ path, ...crumb }, index) => ({...crumb, path, visited: step > index, isActive: !!matches.find(({ id }) => id === path),}))
   }
