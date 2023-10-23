@@ -5,9 +5,9 @@ import breadcrumb from '~/assets/data/breadcrumbs.json'
 const ArrivalBankLayout = () => {
   const matches = useMatches();
   const [breadcrumbs, setBreadcrumbs] = useState(breadcrumb);
-useEffect(()=> {
-  setBreadcrumbs((crumb) => iterateBreadcrumbs(crumb, matches));
-},[])
+  useEffect(()=> {
+    setBreadcrumbs((crumb) => iterateBreadcrumbs(crumb, matches));
+  },[])
   return (
     <main>
       <aside className="navigation-link-breadcrumb">

@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 
 import { prisma } from "~/db.server";
 
-export type { User } from "@prisma/client";
 
 export type AnonymousUser = {
   anonymousId: string;
@@ -13,15 +12,20 @@ export type AnonymousUser = {
   password: string;
   countryId: string;
 };
-export async function getUserById(id: User["id"]) {
-  return prisma.user.findUnique({ where: { id } });
+export async function getUserById({ id }: Pick<User, 'id'>) {
+  return prisma.user.findUnique({ where: { id }, include: { country: true } });
 }
+
 export const checkUserByEmail = async ({ email }: Pick<User, "email">) =>
   prisma.user.findUnique({ where: { email } });
-export const getUserByEmail = async (email: User["email"]) =>
+
+  export const getUserByEmail = async (email: User["email"]) =>
   prisma.user.findUnique({ where: { email } });
 
 export const getUserReviewInformationByEmail = ({ email}: Pick<User, 'email'>) => prisma.user.findUnique({ where: { email }, include: { country: true }});
+
+
+
 export async function createUser({
   email,
   password,
@@ -39,7 +43,9 @@ export async function createUser({
       email,
       username,
       phoneNumber,
-      countryId,
+      country: {
+        connect: { countryId },
+      },
       password: {
         create: {
           hash: hashedPassword,
@@ -78,8 +84,10 @@ export async function verifyLogin(
     return null;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password: _password, ...userWithoutPassword } = userWithPassword;
 
+  const { password: _password, ...userWithoutPassword } = userWithPassword;
+  console.log(_password)
+  Object.assign({_password}, {_password: null})
+console.log({_password})
   return userWithoutPassword;
 }

@@ -13,8 +13,8 @@ import {
 } from "~/utilities/validations/arival.server";
 import { useEffect, useState } from "react";
 import {
-  retrieveAnonymousId,
   updateSessionData,
+  createAnonymousUser,
 } from "~/utilities/analytics/whoami.client.ts";
 
 export const action = async ({ request }) => {
@@ -40,12 +40,8 @@ const ArivalBankInitialInfo = () => {
   const anonymousId = useRef(null);
   const form = useRef(null);
   useEffect(() => {
-    // retrieveAnonymousId
-    // 'symmetrical-invention'
-    const obj = retrieveAnonymousId();
-    if (obj?.anonymousId) {
-      anonymousId.current.value = obj.anonymousId;
-    }
+      
+      anonymousId.current.value = createAnonymousUser().anonymousId
   }, []);
   const [firstInteraction, setFirstInteraction] = useState(false);
   const handleFirstInteraction = () =>
@@ -59,7 +55,6 @@ const ArivalBankInitialInfo = () => {
   const countries = useLoaderData();
   const handleClick = async () => {
     const formData = new FormData(form.current);
-    console.log(formData)
     updateSessionData(Object.fromEntries(formData));
   };
   return (
@@ -69,7 +64,7 @@ const ArivalBankInitialInfo = () => {
       method="post"
       className="arival-bank-form"
     >
-      <input ref={anonymousId} name="anonymousId" hidden aria-hidden />
+      <input ref={anonymousId} name="anonymousId" type="text" autoComplete="off" hidden aria-hidden />
       <div className="arival-bank-form-group">
         <label>Username</label>
         <input

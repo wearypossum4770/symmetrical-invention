@@ -8,25 +8,31 @@ import {
   passwordValidator,
 } from "~/utilities/validations/arival.server";
 import { retrieveAnonymousId } from "~/utilities/analytics/whoami.client.ts";
-import { createUser } from "~/models/user.server";
+  import { createUser } from "~/models/user.server";
 
 
 export const loader = async () => json(null);
 export const action = async ({ request }) => {
-  const data = Object.fromEntries((await request.formData()).entries());
-  const  { current: { value }}= JSON.parse(data.remainingData)
-  const previous = JSON.parse(value)
+  const form = Object.fromEntries((await request.formData()).entries());
+  const data =  (typeof form === 'string') ? JSON.parse(form) : form
+  const {remainingData} = data
+  const parsedData = (typeof remainingData === 'string') ? JSON.parse(remainingData) : remainingData
+  const finalData = (typeof parsedData === 'string') ? JSON.parse(parsedData) : parsedData
+  const userData = { ...form, ...finalData}
   const errors = {
-    password: passwordValidator(data),
-    passwordConfirmation: passwordValidator(data),
+    password: passwordValidator(userData),
+    passwordConfirmation: passwordValidator(userData),
   };
-  const user = await createUser({...data, ...previous, countryId: previous.country})
+  
+  const user = await createUser({...userData, countryId: userData.country})
+  console.log(user, userData)
   return advanceStepAllowed(errors)
     ? json({ errors })
-    : redirect("/arival-bank/review");
+    : redirect(`/arival-bank/review/${user.id}`);
 };
 
 const RegisterPassword = () => {
+
   const [anonymousId, remainingData, data] = [useRef(null), useRef({}), useActionData()];
   useEffect(() => {
     remainingData.current.value = sessionStorage.getItem('symmetrical-invention')
@@ -42,8 +48,8 @@ const RegisterPassword = () => {
       method="post"
       className="arival-bank-form"
     >
-      <textarea name="remainingData" value={JSON.stringify(remainingData)}></textarea>
-      <input ref={anonymousId} name="anonymousId" hidden aria-hidden />
+      <textarea name="remainingData" defaultValue={JSON.stringify(remainingData.current.value)} ></textarea>
+      <input ref={anonymousId} autoComplete="identifier" name="anonymousId" />
       <div className="arival-bank-form-group">
         <label>Password</label>
         <input type="password" name="password" autoComplete="new-password" />

@@ -1,5 +1,6 @@
 import { createId } from "@paralleldrive/cuid2";
 
+import type { User } from "@prisma/client";
 const SESSION_STORAGE_KEY = "symmetrical-invention";
 
 export const setSessionData = async (key: string, data: any): Promise<void> => {
@@ -38,4 +39,14 @@ export const createAnonymousUser = () => {
 };
 
 export const retrieveAnonymousId = () =>
-  typeof document !== "undefined" && getSessionData("symmetrical-invention");
+    (typeof document !== "undefined" &&  getSessionData("symmetrical-invention")) ?? (()=> {anonymousId: ''})
+
+
+export const refreshCache = async ({ email }: Pick<User, "email">) => {
+  try {
+    const resp = await fetch(`http://${window.location.host}:3000/review/${email}`, { mode: 'cors', })
+    return (!resp.ok) ? {} : await resp.json()
+  } catch (error) {
+    return {error:{ flashMessage: "Something went terribly wrong:", error}}
+  }
+}

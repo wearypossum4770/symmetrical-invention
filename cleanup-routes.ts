@@ -64,7 +64,7 @@ const routes = new Set([
     "app/routes/arival-bank._index.jsx",
     "app/routes/arival-bank.signup.jsx",
     "app/routes/arival-bank.password.jsx",
-    "app/routes/arival-bank.review.jsx",
+    "app/routes/arival-bank.review.$id.jsx",
   ]),
 ]);
 const main = async (filename: string, directory: string) =>
